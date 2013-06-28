@@ -1,5 +1,6 @@
 import salome
 import geompy
+import GEOM
 
 # Define help classes for more structured programming
 class MyGeomObject(object):
@@ -31,9 +32,18 @@ class MyVertex(MyGeomObject):
 
     """
     
-    def __init__(self,x,y,z):
-        self.coord = (x,y,z)
-        self.geomObject = geompy.MakeVertex(x,y,z)
+    def __init__(self,x, y = 0.0, z = 0.0):
+
+        if isinstance(x,GEOM._objref_GEOM_Object):
+            if x.GetShapeType() == GEOM.VERTEX:
+                self.coord = x.GetPosition[:3]
+                self.geomObject = x
+            else:
+                raise ValueError("Error: This is no vertex!")
+
+        else:
+            self.coord = (x,y,z)
+            self.geomObject = geompy.MakeVertex(x,y,z)
 
     def __eq__(self,q):
         """
@@ -73,14 +83,60 @@ class MyLine(MyGeomObject):
 # Perhaps deprecate this and replace it by face construction and
 # explosion
 
+class MyVector(MyLine):
+    """
+    Help class for vectors
+    """
+    def __init__(self,vec_or_point,p = None):
+        
+        if isinstance(vec_or_point,MyVertex):
+            if p is None:
+                self.p = MyVertex(0.0,0.0,0.0)
+            elif isinstance(p,MyVertex):
+                self.p = p
+            else:
+                raise ValueError("This constructor does not support that option!")
+            self.q = vec_or_point
+            self.geomObject = \
+                  geompy.MakeVector(self.p.geomObject,self.q.geomObject)
+        
+        elif isinstance(vec_or_point,GEOM._objref_GEOM_Object):
+            type = geompy.ShapeIdToType(vec_or_point.GetType())
+            if type == 'VECTOR':
+                self.geomObject = vec_or_point
+            elif type == 'POINT':
+                pass
+            
+            
+
+    def __eq__(self,other):
+        """
+        Two Vectors are considered to be the same iff they have the same startpoints and endpoints. Thats the only difference between a vector and a line.
+        (without order)
+        """
+        if (self.p == other.p and self.q == other.q):
+            return True
+        else:
+            False
+
+
+
 class MyFace(MyGeomObject):
     """
     Help class for faces, and face related stuff
     """
 
-
     def __init__(self,face):
-        self.face = face
+
+        if face.GetShapeType() == GEOM.FACE:
+            self.face = face
+        else:
+            raise ValueError("Error: Shape is not a Face!")
+
+    def ChangeOrientation(self):
+        pass
+
+        
 
 class MyQuadrangleFromLines(MyGeomObject):
     """
