@@ -26,7 +26,7 @@ class MyGeomObject(object):
 class MyVertex(MyGeomObject):
     """
     Help class for storing vertices.
-    Additionally stores coordinat of
+    Additionally stores coordinate of
     the Vertex
 
     """
@@ -47,7 +47,7 @@ class MyVertex(MyGeomObject):
 
 
 
-class MyEdge(MyGeomObject):
+class MyLine(MyGeomObject):
     """
     Help class for storing edges
     Holds two instances of MyVertex
@@ -55,15 +55,15 @@ class MyEdge(MyGeomObject):
     def __init__(self,p,q):
 
         if p == q: 
-            raise ValueError("Error: Edge is a single point!")
+            raise ValueError("Error: Line is a single point!")
         
-        self.geomObject = geompy.MakeEdge(p.geomObject,q.geomObject)
+        self.geomObject = geompy.MakeLine(p.geomObject,q.geomObject)
         self.p = p
         self.q = q
 
     def __eq__(self,other):
         """
-        Two Edges are considered to be the same iff they have the same endpoints
+        Two Lines are considered to be the same iff they have the same endpoints
         (without order)
         """
         if (self.p == other.p and self.q == other.q) or (self.q == other.p and self.p == other.q):
@@ -72,11 +72,20 @@ class MyEdge(MyGeomObject):
             False
 # Perhaps deprecate this and replace it by face construction and
 # explosion
- 
-class MyQuadrangleFromEdges(MyGeomObject):
+
+class MyFace(MyGeomObject):
+    """
+    Help class for faces, and face related stuff
+    """
+
+
+    def __init__(self,face):
+        self.face = face
+
+class MyQuadrangleFromLines(MyGeomObject):
     """
     Help class for Quadrangles built from
-    Edges.
+    Lines.
     """
 
     def __init__(self,edges):
