@@ -50,6 +50,9 @@ class MyGeomObject(object):
 
     def getGeomObject(self):
         return self.geomObject
+
+    def setGeomObject(self,geom_object):
+        self.geomObject = geom_object
     
 
 
@@ -66,16 +69,16 @@ class MyVertex(MyGeomObject):
 
         if isinstance(x,GEOM._objref_GEOM_Object):
             if x.GetShapeType() == GEOM.VERTEX:
-                self.coord = array(geompy.GetPosition(x)[:3],dtype=data_type)
-                self.geomObject = x
+                self.setCoord(geompy.GetPosition(x)[:3])
+                self.setGeomObject(x)
             else:
                 raise ValueError("Error: This is no vertex!")
         elif isinstance(x,MyVertex):
-            self.coord = x.coord
-            self.geomObject = x.geomObject
+            self.setCoord(x.getCoord())
+            self.setGeomObject(x.getGeomObject())
         else:
-            self.coord = array((x,y,z),dtype=data_type)
-            self.geomObject = geompy.MakeVertex(x,y,z)
+            self.setCoord((x,y,z))
+            self.setGeomObject(geompy.MakeVertex(x,y,z))
 
     def __eq__(self,q):
         """
@@ -87,6 +90,9 @@ class MyVertex(MyGeomObject):
         else:
             return False
 
+    def setCoord(self,coord):
+        self.coord = array(coord,dtype=data_type)
+        
     def getCoord(self):
         return self.coord
 
@@ -143,7 +149,7 @@ class MyLine(MyGeomObject):
         Two Lines are considered to be the same iff they have the same endpoints
         (without order)
         """
-        if (self.p == other.p and self.q == other.q) or (self.q == other.p and self.p == other.q):
+        if (self.getP() == other.getP() and self.getQ() == other.getQ()) or (self.getQ() == other.getP() and self.getP() == other.getQ()):
             return True
         else:
             False
@@ -222,7 +228,7 @@ class MyVector(MyGeomObject):
         Two Vectors are considered to be the same iff they have the same startpoints and endpoints. Thats the only difference between a vector and a line.
         (without order)
         """
-        if (self.p == other.p and self.q == other.q):
+        if (self.getP() == other.getP() and self.getQ() == other.getQ()):
             return True
         else:
             False
@@ -246,8 +252,11 @@ class MyFace(MyGeomObject):
         else:
             raise ValueError("Error: Shape is not a Face!")
 
-    def ChangeOrientation(self):
-        pass
+    def ChangeOrientation(self,make_copy = False):
+        if make_copy:
+            return MyFace(geompy.ChangeOrientation(self.geomObject))
+        else:
+            self.geomObject = geompy.ChangeOrientation(self.geomObject) 
 
         
 
