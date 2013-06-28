@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
-
+from __future__ import print_function
 
 import salome
 import geompy
@@ -67,7 +67,9 @@ class MyVertex(MyGeomObject):
                 self.geomObject = x
             else:
                 raise ValueError("Error: This is no vertex!")
-
+        elif isinstance(x,MyVertex):
+            self.coord = x.coord
+            self.geomObject = x.geomObject
         else:
             self.coord = (x,y,z)
             self.geomObject = geompy.MakeVertex(x,y,z)
@@ -91,23 +93,25 @@ class MyLine(MyGeomObject):
     Holds two instances of MyVertex
     """
     def __init__(self,line_or_point,q = None):
+
+        type = None
+        
         if isinstance(line_or_point,MyVertex):
-            if isinstance(line_or_point,MyVertex):
-                self.p = line_or_point
-            else:
-                raise ValueError("This constructor does not support that option!")
+            self.p = line_or_point
                         
         elif isinstance(line_or_point,GEOM._objref_GEOM_Object):
             type = geompy.ShapeIdToType(line_or_point.GetType())
             if type == 'LINE':
-                self.geomObject = line_or_point
                 subshapes = geompy.SubShapeAll(line_or_point,geompy.ShapeType['VERTEX'])
                 self.p = MyVertex(subshapes[0])
                 self.q = MyVertex(subshapes[-1])
             elif type == 'POINT':
                 self.p = MyVertex(line_or_point)
+        else:
+            raise ValueError("This constructor does not support that option!")
+
                 
-        if q is None and type != 'LINE':
+        if q is None and (type != 'LINE' or type is None):
             raise ValueError("Second argument missing!")
         elif q is None and type == 'LINE':
             pass
@@ -143,31 +147,71 @@ class MyLine(MyGeomObject):
 # Perhaps deprecate this and replace it by face construction and
 # explosion
 
-class MyVector(MyLine):
+class MyVector(MyGeomObject):
     """
     Help class for vectors
     """
-    def __init__(self,vec_or_point,p = None):
+    def __init__(self,vec_or_point,q = None):
         
         if isinstance(vec_or_point,MyVertex):
-            if p is None:
-                self.p = MyVertex(0.0,0.0,0.0)
-            elif isinstance(p,MyVertex):
-                self.p = p
-            else:
-                raise ValueError("This constructor does not support that option!")
-            self.q = vec_or_point
-            self.geomObject = \
-                  geompy.MakeVector(self.p.geomObject,self.q.geomObject)
-        
+            p_type = 'MyVertex'
         elif isinstance(vec_or_point,GEOM._objref_GEOM_Object):
-            type = geompy.ShapeIdToType(vec_or_point.GetType())
-            if type == 'VECTOR':
-                self.geomObject = vec_or_point
-                
-            elif type == 'POINT':
-                pass
-            
+            p_type = geompy.ShapeIdToType(vec_or_point.GetType())
+        else:
+            raise ValueError("This constructor does not support that option!")
+
+        if isinstance(q,MyVertex):
+            q_type = 'MyVertex'
+        elif isinstance(q,GEOM._objref_GEOM_Object):
+            q_type = geompy.ShapeIdToType(vec_or_point.GetType())
+        elif q is None:
+            pass
+        else:
+            raise ValueError("This constructor does not support that option!")
+
+        
+        if q is None:
+            if p_type == 'MyVertex':
+                self.q = vec_or_point
+                self.p = MyVertex(0.0)
+            elif p_type == 'POINT':
+                self.q = MyVertex(vec_or_point)
+                self.p = MyVertex(0.0)
+            elif p_type == 'VECTOR':
+                subshapes = geompy.SubShapeAll(vec_or_point,geompy.ShapeType['VERTEX'])
+                self.p = MyVertex(subshapes[0])
+                self.q = MyVertex(subshapes[-1])
+            else:
+                raise ValueError('Error: Wrong Type!')
+        elif q_type == 'POINT': 
+            self.q = MyVertex(q)
+            if p_type == 'MyVertex': 
+                self.p = vec_or_point
+            elif  p_type == 'POINT':
+                self.p = MyVertex(vec_or_point)
+            else:
+                raise ValueError('Error: Wrong Type!')
+        elif q_type == 'MyVertex':
+            self.q = q
+            if p_type == 'MyVertex': 
+                self.p = vec_or_point
+            elif  p_type == 'POINT':
+                self.p = MyVertex(vec_or_point)
+            else:
+                raise ValueError('Error: Wrong Type!')
+        else:
+            raise ValueError('Error: Wrong Type!')
+
+        
+        self.geomObject = geompy.MakeVector(self.p.geomObject,self.q.geomObject)
+
+        
+    def getP(self):
+        return self.p
+
+    def getQ(self):
+        return self.q
+           
             
 
     def __eq__(self,other):
