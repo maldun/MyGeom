@@ -72,13 +72,16 @@ class MyVertex(MyGeomObject):
                 self.setCoord(geompy.GetPosition(x)[:3])
                 self.setGeomObject(x)
             else:
-                raise ValueError("Error: This is no vertex!")
+                raise ValueError("Error: This is not a vertex!")
         elif isinstance(x,MyVertex):
             self.setCoord(x.getCoord())
             self.setGeomObject(x.getGeomObject())
         else:
-            self.setCoord((x,y,z))
-            self.setGeomObject(geompy.MakeVertex(x,y,z))
+            try:
+                self.setCoord((x,y,z))
+                self.setGeomObject(geompy.MakeVertex(x,y,z))
+            except Exception:
+                raise ValueError("Error: Wrong data type!")
 
     def __eq__(self,q):
         """
@@ -122,35 +125,13 @@ class MyLine(MyGeomObject):
         return self.p
 
     def setP(self,p):
-        if isinstance(p,MyVertex):
-            self.p = p
-        elif isinstance(p,GEOM._objref_GEOM_Object):
-            type = p.GetShapeType()
-
-            if type == GEOM.VERTEX:
-                self.p = MyVertex(p)
-            else:
-                raise ValueError("Error: Point is wrong type!")
-
-        else:
-            raise ValueError("Error: Point is wrong type!")
+        self.p = MyVertex(p)
         
     def getQ(self):
         return self.q
 
     def setQ(self,q):
-        if isinstance(q,MyVertex):
-            self.q = q
-        elif isinstance(q,GEOM._objref_GEOM_Object):
-            type = q.GetShapeType()
-
-            if type == GEOM.VERTEX:
-                self.q = MyVertex(q)
-            else:
-                raise ValueError("Error: Point is wrong type!")
-
-        else:
-            raise ValueError("Error: Point is wrong type!")
+        self.q = MyVertex(q)
 
     def __eq__(self,other):
         """
@@ -189,11 +170,11 @@ class MyVector(MyGeomObject):
         
         if q is None:
             if p_type == 'MyVertex':
-                self.q = vec_or_point
-                self.p = MyVertex(0.0)
+                self.setQ(vec_or_point)
+                self.setP(MyVertex(0.0))
             elif p_type == 'POINT':
-                self.q = MyVertex(vec_or_point)
-                self.p = MyVertex(0.0)
+                self.setQ(MyVertex(vec_or_point))
+                self.setP(MyVertex(0.0))
             elif p_type == 'VECTOR':
                 subshapes = geompy.SubShapeAll(vec_or_point,geompy.ShapeType['VERTEX'])
                 self.p = MyVertex(subshapes[0])
@@ -227,37 +208,14 @@ class MyVector(MyGeomObject):
         return self.p
 
     def setP(self,p):
-        if isinstance(p,MyVertex):
-            self.p = p
-        elif isinstance(p,GEOM._objref_GEOM_Object):
-            type = p.GetShapeType()
-
-            if type == GEOM.VERTEX:
-                self.p = MyVertex(p)
-            else:
-                raise ValueError("Error: Point is wrong type!")
-
-        else:
-            raise ValueError("Error: Point is wrong type!")
+        self.p = MyVertex(p)
         
  
     def getQ(self):
         return self.q
            
     def setQ(self,q):
-        if isinstance(q,MyVertex):
-            self.q = q
-        elif isinstance(q,GEOM._objref_GEOM_Object):
-            type = q.GetShapeType()
-
-            if type == GEOM.VERTEX:
-                self.q = MyVertex(q)
-            else:
-                raise ValueError("Error: Point is wrong type!")
-
-        else:
-            raise ValueError("Error: Point is wrong type!")
-
+        self.q = MyVertex(q)
 
     def __eq__(self,other):
         """

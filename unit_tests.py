@@ -69,7 +69,7 @@ class MyGeomUnitTester(object):
         try:
             MyLine(vertex0)
             MyLine(vertex0.getGeomObject())
-        except ValueError:
+        except Exception:
             print("correct error handling")
 
 
