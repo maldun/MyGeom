@@ -1,6 +1,30 @@
+# MyGeom.py - API for easier Salome geompy usage
+#
+# Copyright (C) year  Stefan Reiterer - stefan.reiterer@magnasteyr.com
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+
+
+
 import salome
 import geompy
 import GEOM
+
+# For future Versions of salome!
+# from salome.geom import geomBuilder
+# geompy = geomBuilder.New(salome.myStudy)
 
 # Define help classes for more structured programming
 class MyGeomObject(object):
@@ -20,6 +44,9 @@ class MyGeomObject(object):
 
     def getStudyName(self):
         return self.studyName
+
+    def getGeomObject(self):
+        return self.geomObject
     
 
 
@@ -36,7 +63,7 @@ class MyVertex(MyGeomObject):
 
         if isinstance(x,GEOM._objref_GEOM_Object):
             if x.GetShapeType() == GEOM.VERTEX:
-                self.coord = x.GetPosition[:3]
+                self.coord = geompy.GetPosition(x)[:3]
                 self.geomObject = x
             else:
                 raise ValueError("Error: This is no vertex!")
@@ -50,26 +77,59 @@ class MyVertex(MyGeomObject):
         Two points are considered equal iff
         the coordinates are the same
         """
-        if self.coord == q.coord:
+        if self.getCoord() == q.getCoord():
             return True
         else:
             return False
 
-
+    def getCoord(self):
+        return self.coord
 
 class MyLine(MyGeomObject):
     """
-    Help class for storing edges
+    Help class for storing lines
     Holds two instances of MyVertex
     """
-    def __init__(self,p,q):
+    def __init__(self,line_or_point,q = None):
+        if isinstance(line_or_point,MyVertex):
+            if isinstance(line_or_point,MyVertex):
+                self.p = line_or_point
+            else:
+                raise ValueError("This constructor does not support that option!")
+                        
+        elif isinstance(line_or_point,GEOM._objref_GEOM_Object):
+            type = geompy.ShapeIdToType(line_or_point.GetType())
+            if type == 'LINE':
+                self.geomObject = line_or_point
+                subshapes = geompy.SubShapeAll(line_or_point,geompy.ShapeType['VERTEX'])
+                self.p = MyVertex(subshapes[0])
+                self.q = MyVertex(subshapes[-1])
+            elif type == 'POINT':
+                self.p = MyVertex(line_or_point)
+                
+        if q is None and type != 'LINE':
+            raise ValueError("Second argument missing!")
+        elif q is None and type == 'LINE':
+            pass
+        elif isinstance(q,GEOM._objref_GEOM_Object):
+            type_q = geompy.ShapeIdToType(q.GetType())
+            if type_q == 'POINT':
+                self.q = MyVertex(q)
+            else:
+                raise ValueError("Error: second point is wrong type")
+        elif isinstance(q,MyVertex):
+                self.q = q
+        else:
+            raise ValueError("Error: second point is wrong type")
+                    
+        self.geomObject = geompy.MakeLineTwoPnt(self.p.geomObject,self.q.geomObject)
 
-        if p == q: 
-            raise ValueError("Error: Line is a single point!")
         
-        self.geomObject = geompy.MakeLine(p.geomObject,q.geomObject)
-        self.p = p
-        self.q = q
+    def getP(self):
+        return self.p
+
+    def getQ(self):
+        return self.q
 
     def __eq__(self,other):
         """
@@ -104,6 +164,7 @@ class MyVector(MyLine):
             type = geompy.ShapeIdToType(vec_or_point.GetType())
             if type == 'VECTOR':
                 self.geomObject = vec_or_point
+                
             elif type == 'POINT':
                 pass
             
