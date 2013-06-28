@@ -102,40 +102,20 @@ class MyLine(MyGeomObject):
     Holds two instances of MyVertex
     """
     def __init__(self,line_or_point,q = None):
-
-        type = None
-        
-        if isinstance(line_or_point,MyVertex):
-            self.p = line_or_point
-                        
-        elif isinstance(line_or_point,GEOM._objref_GEOM_Object):
+                       
+        if isinstance(line_or_point,GEOM._objref_GEOM_Object):
             type = geompy.ShapeIdToType(line_or_point.GetType())
-            if type == 'LINE':
+            if type == 'LINE' and q is None:
                 subshapes = geompy.SubShapeAll(line_or_point,geompy.ShapeType['VERTEX'])
-                self.p = MyVertex(subshapes[0])
-                self.q = MyVertex(subshapes[-1])
-            elif type == 'POINT':
-                self.p = MyVertex(line_or_point)
-        else:
-            raise ValueError("This constructor does not support that option!")
+                line_or_point = subshapes[0]
+                q = subshapes[-1]
+            elif type == 'LINE' and q is not None:
+                raise ValueError("Wrong Type!")
 
-                
-        if q is None and (type != 'LINE' or type is None):
-            raise ValueError("Second argument missing!")
-        elif q is None and type == 'LINE':
-            pass
-        elif isinstance(q,GEOM._objref_GEOM_Object):
-            type_q = geompy.ShapeIdToType(q.GetType())
-            if type_q == 'POINT':
-                self.q = MyVertex(q)
-            else:
-                raise ValueError("Error: second point is wrong type")
-        elif isinstance(q,MyVertex):
-                self.q = q
-        else:
-            raise ValueError("Error: second point is wrong type")
-                    
-        self.geomObject = geompy.MakeLineTwoPnt(self.p.geomObject,self.q.geomObject)
+        self.setP(line_or_point)
+        self.setQ(q)
+        
+        self.geomObject = geompy.MakeLineTwoPnt(self.getP().getGeomObject(),self.getQ().getGeomObject())
 
         
     def getP(self):
@@ -145,9 +125,9 @@ class MyLine(MyGeomObject):
         if isinstance(p,MyVertex):
             self.p = p
         elif isinstance(p,GEOM._objref_GEOM_Object):
-            type = geompy.ShapeIdToType(line_or_point.GetType())
+            type = p.GetShapeType()
 
-            if type == 'POINT':
+            if type == GEOM.VERTEX:
                 self.p = MyVertex(p)
             else:
                 raise ValueError("Error: Point is wrong type!")
@@ -161,10 +141,10 @@ class MyLine(MyGeomObject):
     def setQ(self,q):
         if isinstance(q,MyVertex):
             self.q = q
-        elif isinstance(p,GEOM._objref_GEOM_Object):
-            type = geompy.ShapeIdToType(line_or_point.GetType())
+        elif isinstance(q,GEOM._objref_GEOM_Object):
+            type = q.GetShapeType()
 
-            if type == 'POINT':
+            if type == GEOM.VERTEX:
                 self.q = MyVertex(q)
             else:
                 raise ValueError("Error: Point is wrong type!")
@@ -246,10 +226,38 @@ class MyVector(MyGeomObject):
     def getP(self):
         return self.p
 
+    def setP(self,p):
+        if isinstance(p,MyVertex):
+            self.p = p
+        elif isinstance(p,GEOM._objref_GEOM_Object):
+            type = p.GetShapeType()
+
+            if type == GEOM.VERTEX:
+                self.p = MyVertex(p)
+            else:
+                raise ValueError("Error: Point is wrong type!")
+
+        else:
+            raise ValueError("Error: Point is wrong type!")
+        
+ 
     def getQ(self):
         return self.q
            
-            
+    def setQ(self,q):
+        if isinstance(q,MyVertex):
+            self.q = q
+        elif isinstance(q,GEOM._objref_GEOM_Object):
+            type = q.GetShapeType()
+
+            if type == GEOM.VERTEX:
+                self.q = MyVertex(q)
+            else:
+                raise ValueError("Error: Point is wrong type!")
+
+        else:
+            raise ValueError("Error: Point is wrong type!")
+
 
     def __eq__(self,other):
         """
