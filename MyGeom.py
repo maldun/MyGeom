@@ -22,6 +22,9 @@ import salome
 import geompy
 import GEOM
 
+from numpy import array
+from numpy import float64 as data_type
+
 # For future Versions of salome!
 # from salome.geom import geomBuilder
 # geompy = geomBuilder.New(salome.myStudy)
@@ -63,7 +66,7 @@ class MyVertex(MyGeomObject):
 
         if isinstance(x,GEOM._objref_GEOM_Object):
             if x.GetShapeType() == GEOM.VERTEX:
-                self.coord = geompy.GetPosition(x)[:3]
+                self.coord = array(geompy.GetPosition(x)[:3],dtype=data_type)
                 self.geomObject = x
             else:
                 raise ValueError("Error: This is no vertex!")
@@ -71,7 +74,7 @@ class MyVertex(MyGeomObject):
             self.coord = x.coord
             self.geomObject = x.geomObject
         else:
-            self.coord = (x,y,z)
+            self.coord = array((x,y,z),dtype=data_type)
             self.geomObject = geompy.MakeVertex(x,y,z)
 
     def __eq__(self,q):
@@ -79,7 +82,7 @@ class MyVertex(MyGeomObject):
         Two points are considered equal iff
         the coordinates are the same
         """
-        if self.getCoord() == q.getCoord():
+        if all(self.getCoord() == q.getCoord()):
             return True
         else:
             return False
@@ -232,9 +235,14 @@ class MyFace(MyGeomObject):
     """
 
     def __init__(self,face):
+        """
+        This init is a stub! It will be extended Later!
+        """
 
         if face.GetShapeType() == GEOM.FACE:
-            self.face = face
+            self.geomObject = face
+        elif isinstance(face,MyFace):
+            self.geomObject = face.getGeomObject()
         else:
             raise ValueError("Error: Shape is not a Face!")
 
@@ -264,12 +272,16 @@ def addListToStudy(liste,string):
         object.addToStudy(string + str(i))
         i+=1
 
-def ExplodeSubShape(my_geom_object,type):
+def ExplodeSubShape(my_geom_object,type,add_to_study = True):
     """
-    Explode Sub Shapes of certain Type
+    Explode Sub Shapes of certain Type. If add_to_study is
+    True add all objects to study
     """
     geom_object = my_geom_object.geomObject
     subshapes = geompy.SubShapeAll(geom_object,geompy.ShapeType[type])
-    for sub in subshapes:
-        name = geompy.SubShapeName(sub,geom_object)
-        geompy.addToStudyInFather(geom_object,sub,name)
+    if add_to_study:
+        for sub in subshapes:
+            name = geompy.SubShapeName(sub,geom_object)
+            geompy.addToStudyInFather(geom_object,sub,name)
+
+    return subshapes
