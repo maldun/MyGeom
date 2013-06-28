@@ -177,31 +177,31 @@ class MyVector(MyGeomObject):
                 self.setP(MyVertex(0.0))
             elif p_type == 'VECTOR':
                 subshapes = geompy.SubShapeAll(vec_or_point,geompy.ShapeType['VERTEX'])
-                self.p = MyVertex(subshapes[0])
-                self.q = MyVertex(subshapes[-1])
+                self.setP(subshapes[0])
+                self.setQ(subshapes[-1])
             else:
                 raise ValueError('Error: Wrong Type!')
         elif q_type == 'POINT': 
-            self.q = MyVertex(q)
+            self.setQ(q)
             if p_type == 'MyVertex': 
-                self.p = vec_or_point
+                self.setP(vec_or_point)
             elif  p_type == 'POINT':
-                self.p = MyVertex(vec_or_point)
+                self.setP(vec_or_point)
             else:
                 raise ValueError('Error: Wrong Type!')
         elif q_type == 'MyVertex':
-            self.q = q
+            self.setQ(q)
             if p_type == 'MyVertex': 
-                self.p = vec_or_point
+                self.setP(vec_or_point)
             elif  p_type == 'POINT':
-                self.p = MyVertex(vec_or_point)
+                self.setP(vec_or_point)
             else:
                 raise ValueError('Error: Wrong Type!')
         else:
             raise ValueError('Error: Wrong Type!')
 
         
-        self.geomObject = geompy.MakeVector(self.p.geomObject,self.q.geomObject)
+        self.geomObject = geompy.MakeVector(self.getP().getGeomObject(),self.getQ().getGeomObject())
 
         
     def getP(self):
