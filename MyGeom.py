@@ -141,8 +141,36 @@ class MyLine(MyGeomObject):
     def getP(self):
         return self.p
 
+    def setP(self,p):
+        if isinstance(p,MyVertex):
+            self.p = p
+        elif isinstance(p,GEOM._objref_GEOM_Object):
+            type = geompy.ShapeIdToType(line_or_point.GetType())
+
+            if type == 'POINT':
+                self.p = MyVertex(p)
+            else:
+                raise ValueError("Error: Point is wrong type!")
+
+        else:
+            raise ValueError("Error: Point is wrong type!")
+        
     def getQ(self):
         return self.q
+
+    def setQ(self,q):
+        if isinstance(q,MyVertex):
+            self.q = q
+        elif isinstance(p,GEOM._objref_GEOM_Object):
+            type = geompy.ShapeIdToType(line_or_point.GetType())
+
+            if type == 'POINT':
+                self.q = MyVertex(q)
+            else:
+                raise ValueError("Error: Point is wrong type!")
+
+        else:
+            raise ValueError("Error: Point is wrong type!")
 
     def __eq__(self,other):
         """
