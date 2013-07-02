@@ -78,9 +78,11 @@ class MyVertex(MyGeomObject):
             self.setCoord(x.getCoord())
             self.setGeomObject(x.getGeomObject())
         elif isinstance(x,ndarray) or isinstance(x,tuple) or isinstance(x,list):
-            print(True)
-            self.setCoord(data_type(x))
-            self.setGeomObject(geompy.MakeVertex(x[0],x[1],x[2]))
+            if len(x) is 3:
+                self.setCoord(data_type(x))
+                self.setGeomObject(geompy.MakeVertex(x[0],x[1],x[2]))
+            else:
+                raise ValueError("Error: Wrong Dimension!")
         else:
             try:
                 self.setCoord((x,y,z))

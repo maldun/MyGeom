@@ -35,6 +35,12 @@ class MyGeomUnitTester(object):
         print("Vertex4: ", vertex4.getCoord())
         print("Vertex5: ", vertex5.getCoord())
 
+        try:
+            coords = list(coords) + [3.0]
+            MyVertex(coords)
+        except ValueError:
+            print("Correct Error Handling with wrong dimensions.")
+
     def testVertexComparison(self):
 
         # create by coordinate
