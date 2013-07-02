@@ -1,6 +1,7 @@
-# MyGeom.py - API for easier Salome geompy usage
+# MyGeom Module - API for easier Salome geompy usage
+# Types.py: Extended Data Types for MyGeom
 #
-# Copyright (C) year  Stefan Reiterer - stefan.reiterer@magnasteyr.com
+# Copyright (C) 2013  Stefan Reiterer - stefan.reiterer@magnasteyr.com
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
