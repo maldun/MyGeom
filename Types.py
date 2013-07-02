@@ -1,6 +1,7 @@
-# MyGeom.py - API for easier Salome geompy usage
+# MyGeom Module - API for easier Salome geompy usage
+# Types.py: Extended Data Types for MyGeom
 #
-# Copyright (C) year  Stefan Reiterer - stefan.reiterer@magnasteyr.com
+# Copyright (C) 2013  Stefan Reiterer - stefan.reiterer@magnasteyr.com
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -22,7 +23,7 @@ import salome
 import geompy
 import GEOM
 
-from numpy import array
+from numpy import array, ndarray
 from numpy import float64 as data_type
 
 # For future Versions of salome!
@@ -76,6 +77,12 @@ class MyVertex(MyGeomObject):
         elif isinstance(x,MyVertex):
             self.setCoord(x.getCoord())
             self.setGeomObject(x.getGeomObject())
+        elif isinstance(x,ndarray) or isinstance(x,tuple) or isinstance(x,list):
+            if len(x) is 3:
+                self.setCoord(data_type(x))
+                self.setGeomObject(geompy.MakeVertex(x[0],x[1],x[2]))
+            else:
+                raise ValueError("Error: Wrong Dimension!")
         else:
             try:
                 self.setCoord((x,y,z))

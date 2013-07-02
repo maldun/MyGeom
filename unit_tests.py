@@ -1,6 +1,9 @@
 
 from __future__ import print_function
-    
+
+from numpy import array
+from MyGeom.Types import MyVertex, MyLine, MyVector
+
 class MyGeomUnitTester(object):
     """
     Class to test MyGeom classes and methods 
@@ -15,13 +18,28 @@ class MyGeomUnitTester(object):
         vertex0 = MyVertex(0.0)
         vertex1 = MyVertex(1.0)
 
-        # Create with Vertxe
+        # Create with Vertex
         vertex2 = MyVertex(vertex1.getGeomObject())
+
+        # Create with Lists
+        coords = (0.0,1.0,2.0)
+        vertex3 = MyVertex(coords)
+        vertex4 = MyVertex(list(coords))
+        vertex5 = MyVertex(array(coords))
 
         print("Test Vertex creation: ")
         print("Vertex0: ", vertex0.getCoord())
         print("Vertex1: ", vertex1.getCoord())
         print("Vertex2: ", vertex2.getCoord())
+        print("Vertex3: ", vertex3.getCoord())
+        print("Vertex4: ", vertex4.getCoord())
+        print("Vertex5: ", vertex5.getCoord())
+
+        try:
+            coords = list(coords) + [3.0]
+            MyVertex(coords)
+        except ValueError:
+            print("Correct Error Handling with wrong dimensions.")
 
     def testVertexComparison(self):
 
