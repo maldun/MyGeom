@@ -4,7 +4,7 @@ MyGeom
 Help Module for Coding with Salome 
 
 Author: Stefan Reiterer
-Email: maldun.finsterschreck@gmail.com
+Email: stefan.reiterer@magnasteyr.com
 
 License: LGPL 2.1 (same as Salome)
 
