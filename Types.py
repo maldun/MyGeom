@@ -23,7 +23,7 @@ import salome
 import geompy
 import GEOM
 
-from numpy import array
+from numpy import array, ndarray
 from numpy import float64 as data_type
 
 # For future Versions of salome!
@@ -77,6 +77,10 @@ class MyVertex(MyGeomObject):
         elif isinstance(x,MyVertex):
             self.setCoord(x.getCoord())
             self.setGeomObject(x.getGeomObject())
+        elif isinstance(x,ndarray) or isinstance(x,tuple) or isinstance(x,list):
+            print(True)
+            self.setCoord(data_type(x))
+            self.setGeomObject(geompy.MakeVertex(x[0],x[1],x[2]))
         else:
             try:
                 self.setCoord((x,y,z))
