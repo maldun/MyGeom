@@ -80,6 +80,17 @@ class MyGeomUnitTester(object):
         print("are not the same: ", not vertex0 == vertex1)
         print("are the same: ", vertex2 == vertex1)
 
+    def testVertexArithmetic(self):
+
+        vertex0 = MyVertex(0.0)
+        vertex1 = MyVertex(1.0)
+        vertex2 = MyVertex(2.0)
+
+        print("Test addition: ", (vertex0 + vertex1) == vertex1)
+        print("Test subtraction: ", (vertex1 - vertex1) == vertex0)
+        print("Test multiplication by scalar: ", (vertex1*2) == vertex2)
+        print("Test division by scalar: ", (vertex2/2.) == vertex1)
+
     def testVertexClass(self):
         """
         Tests for Vertex Class
@@ -87,6 +98,7 @@ class MyGeomUnitTester(object):
 
         self.testVertexCreation()
         self.testVertexComparison()
+        self.testVertexArithmetic()
 
 
     #################################
@@ -196,7 +208,7 @@ class MyGeomUnitTester(object):
         salome_face1 = salome.myStudy.FindObject("test_face").GetObject()
         face1 = MyFace(salome_face1)
 
-        print("Test Face creation: ", face1.getGeomObject() == salome_face1) 
+        #print("Test Face creation: ", face1.getGeomObject() == salome_face1) 
 
 
     def testMakeVertexOnSurface(self):

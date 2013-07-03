@@ -277,11 +277,14 @@ class MyFace(MyGeomObject):
         """
 
         if isinstance(face,MyFace):
-            self.geomObject = face
-        elif face.GetShapeType() == GEOM.FACE:
-            self.geomObject = face.getGeomObject()
+            self.setGeomObject(face.getGeomObject())
+        elif isinstance(face,GEOM._objref_GEOM_Object):
+            if face.GetShapeType() == GEOM.FACE:
+                self.setGeomObject(face)
+            else:
+                raise ValueError("Error: Shape is not a Face!")
         else:
-            raise ValueError("Error: Shape is not a Face!")
+            ValueError("Error: Not a valid input!")
 
     def changeOrientation(self,make_copy = False):
         """        
