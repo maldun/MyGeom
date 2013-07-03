@@ -106,6 +106,12 @@ class MyVertex(MyGeomObject):
     def getCoord(self):
         return self.coord
 
+    def __repr__(self):
+        """
+        Function to print the point as a tuple
+        """
+        return str(tuple(self.getCoord()))
+
 class MyLine(MyGeomObject):
     """
     Help class for storing lines
@@ -246,29 +252,29 @@ class MyFace(MyGeomObject):
         This init is a stub! It will be extended Later!
         """
 
-        if face.GetShapeType() == GEOM.FACE:
+        if isinstance(face,MyFace):
             self.geomObject = face
-        elif isinstance(face,MyFace):
+        elif face.GetShapeType() == GEOM.FACE:
             self.geomObject = face.getGeomObject()
         else:
             raise ValueError("Error: Shape is not a Face!")
 
     def changeOrientation(self,make_copy = False):
-    """        
-    Changes the Orientation of the Face
-
-    Parameters
-    ----------
-    make_copy : bool
-                Indicates if a copy should be made or not. Default is False
-    Returns
-    -------
-    A MyFace or nothing 
-
-    Examples
-    --------
-
-    """
+        """        
+        Changes the Orientation of the Face
+        
+        Parameters
+        ----------
+        make_copy : bool
+                    Indicates if a copy should be made or not. Default is False
+        Returns
+        -------
+        A MyFace or nothing 
+        
+        Examples
+        --------
+        
+        """
         if make_copy:
             return MyFace(geompy.ChangeOrientation(self.geomObject))
         else:
@@ -289,7 +295,7 @@ class MyFace(MyGeomObject):
 
         MyVertex instance which holds the desired point
         """
-
+        
         if v is None:
 
             if isinstance(u,ndarray) or isinstance(u,list) or isinstance(u,tuple):
@@ -297,7 +303,7 @@ class MyFace(MyGeomObject):
                     return MyVertex(geompy.MakeVertexOnSurface(self.geomObject,u[0],u[1]))
                 else:
                     raise ValueError("Error: List has wrong dimension!")
-            elif:
+            else:
                 raise ValueError("Error: Wrong data type!")
         else:
             return MyVertex(geompy.MakeVertexOnSurface(self.geomObject,u,v))

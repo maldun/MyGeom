@@ -17,10 +17,18 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
+
+#!!!! For this test a running Salome Session with test.hdf is needed!!!!
+
 from __future__ import print_function
 
-from numpy import array
-from MyGeom.Types import MyVertex, MyLine, MyVector
+import salome 
+import GEOM
+import geompy
+
+from numpy import array, arange
+from MyGeom.Types import *
+from MyGeom.Tools import *
 
 class MyGeomUnitTester(object):
     """
@@ -46,9 +54,9 @@ class MyGeomUnitTester(object):
         vertex5 = MyVertex(array(coords))
 
         print("Test Vertex creation: ")
-        print("Vertex0: ", vertex0.getCoord())
-        print("Vertex1: ", vertex1.getCoord())
-        print("Vertex2: ", vertex2.getCoord())
+        print("Vertex0: ", vertex0) # Test correct string representation
+        print("Vertex1: ", vertex1.getCoord()) # test get method
+        print("Vertex2: ", vertex2)
         print("Vertex3: ", vertex3.getCoord())
         print("Vertex4: ", vertex4.getCoord())
         print("Vertex5: ", vertex5.getCoord())
@@ -184,14 +192,65 @@ class MyGeomUnitTester(object):
     #################################
 
     def testFaceCreation(self):
-        pass
+        
+        salome_face1 = salome.myStudy.FindObject("test_face").GetObject()
+        face1 = MyFace(salome_face1)
+
+        print("Test Face creation: ", face1.getGeomObject() == salome_face1) 
+
+
+    def testMakeVertexOnSurface(self):
+
+        salome_face1 = salome.myStudy.FindObject("test_face").GetObject()
+        face1 = MyFace(salome_face1)
+
+        vertex1 = face1.makeVertexOnSurface([0.,0.])
+        vertex2 = face1.makeVertexOnSurface((0.5,0.5))
+        vertex3 = face1.makeVertexOnSurface(1.,1.)
+        
+        vertex1_check = MyVertex(-1.,-1.)
+        vertex2_check = MyVertex(0.)
+        vertex3_check = MyVertex(1.0,1.0)
+
+
+        print("Test makeVertexOnSurface creation: ",vertex1 == vertex1_check,\
+                  vertex2 == vertex2_check,vertex3 == vertex3_check) 
+
 
     def testFaceClass(self):
         """
         tests for faces
         """
         self.testFaceCreation()
+        self.testMakeVertexOnSurface()
 
+
+    def testCreateLocalCoordinates(self):
+        
+        salome_face1 = salome.myStudy.FindObject("test_face").GetObject()
+        face1 = MyFace(salome_face1)
+        
+        coord_u = arange(0,1.25,0.25)
+        coord_v = coord_u
+
+        vertices = create_local_coordinates(face1,coord_u,coord_v)
+        
+        string = ""
+        for i in range(5):
+            for j in range(5):
+                string += str(vertices[i][j])
+
+            string += "\n"
+
+        print(string)
+        
+
+    def testTools(self):
+        """
+        Test given tools
+        """
+        self.testCreateLocalCoordinates()
+        
 
     ######################################################
     #
@@ -204,6 +263,7 @@ class MyGeomUnitTester(object):
         self.testLineClass()
         self.testVectorClass()
         self.testFaceClass()
+        self.testTools()
 
 
 tester = MyGeomUnitTester()
