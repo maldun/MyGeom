@@ -56,7 +56,7 @@ def explode_sub_shape(my_geom_object,type,add_to_study = True):
 
     return subshapes
 
-def create_local_coordinates(face, coord_u, coord_v):
+def create_local_coordinates(face, coord_u, coord_v,my_geom = True):
     """
     Creates MyVertex list of a local coordinate system for a given degree.
     
@@ -82,6 +82,25 @@ def create_local_coordinates(face, coord_u, coord_v):
         face = MyFace(face)
 
     make_vertex = face.makeVertexOnSurface
+    if my_geom:
+        vertices = [[make_vertex(u,v) for v in coord_v] for u in coord_u]
+    else:
+        vertices = [[make_vertex(u,v).getGeomObject() for v in coord_v] for u in coord_u]
 
-    vertices = [[make_vertex(u,v) for v in coord_v] for u in coord_u]
     return vertices
+
+def create_face_by_points(points):
+    """
+    Takes a set of points and creates a face with it
+    """
+    # Create wires in u direction
+    wires = [geompy.MakeInterpol(coords) for coords in points]
+
+    # Transpose list 
+    points2 = array(points).transpose()
+    points2 = points2.tolist()
+
+    # Create wires in v direction
+    wires += [geompy.MakeInterpol(coords) for coords in points2]
+
+    return MyFace(geompy.MakeFace(wires))
