@@ -253,12 +253,56 @@ class MyFace(MyGeomObject):
         else:
             raise ValueError("Error: Shape is not a Face!")
 
-    def ChangeOrientation(self,make_copy = False):
+    def changeOrientation(self,make_copy = False):
+    """        
+    Changes the Orientation of the Face
+
+    Parameters
+    ----------
+    make_copy : bool
+                Indicates if a copy should be made or not. Default is False
+    Returns
+    -------
+    A MyFace or nothing 
+
+    Examples
+    --------
+
+    """
         if make_copy:
             return MyFace(geompy.ChangeOrientation(self.geomObject))
         else:
             self.geomObject = geompy.ChangeOrientation(self.geomObject) 
 
+    def makeVertexOnSurface(self,u,v = None):
+        """
+        Creates Vertex on given local coordinates
+        
+        Parameters
+        ----------
+
+        u : array, list, tuple or float
+        v : None or float
+
+        Returns
+        -------
+
+        MyVertex instance which holds the desired point
+        """
+
+        if v is None:
+
+            if isinstance(u,ndarray) or isinstance(u,list) or isinstance(u,tuple):
+                if len(u) is 2:
+                    return MyVertex(geompy.MakeVertexOnSurface(self.geomObject,u[0],u[1]))
+                else:
+                    raise ValueError("Error: List has wrong dimension!")
+            elif:
+                raise ValueError("Error: Wrong data type!")
+        else:
+            return MyVertex(geompy.MakeVertexOnSurface(self.geomObject,u,v))
+                                    
+        
         
 
 class MyQuadrangleFromLines(MyGeomObject):
@@ -272,26 +316,3 @@ class MyQuadrangleFromLines(MyGeomObject):
             [edge.geomObject for edge in edges],1)
         self.edges = edges
  
-def addListToStudy(liste,string):
-    """
-    Function to add list of geom objects to a study,
-    with numbered name
-    """
-    i = 0
-    for object in liste:
-        object.addToStudy(string + str(i))
-        i+=1
-
-def ExplodeSubShape(my_geom_object,type,add_to_study = True):
-    """
-    Explode Sub Shapes of certain Type. If add_to_study is
-    True add all objects to study
-    """
-    geom_object = my_geom_object.geomObject
-    subshapes = geompy.SubShapeAll(geom_object,geompy.ShapeType[type])
-    if add_to_study:
-        for sub in subshapes:
-            name = geompy.SubShapeName(sub,geom_object)
-            geompy.addToStudyInFather(geom_object,sub,name)
-
-    return subshapes
