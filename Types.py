@@ -305,7 +305,7 @@ class MyFace(MyGeomObject):
         
         
 
-class MyQuadrangleFromLines(MyGeomObject):
+class MyQuadrangleFromLines(MyFace):
     """
     Help class for Quadrangles built from
     Lines.

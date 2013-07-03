@@ -175,11 +175,35 @@ class MyGeomUnitTester(object):
 
         self.testVectorConstruction()
         self.testVectorCompare()
- 
+
+
+
+
+    #################################
+    # Faces
+    #################################
+
+    def testFaceCreation(self):
+        pass
+
+    def testFaceClass(self):
+        """
+        tests for faces
+        """
+        self.testFaceCreation()
+
+
+    ######################################################
+    #
+    # Execution
+    # 
+    #####################################################
     def __init__(self):
 
         self.testVertexClass()
         self.testLineClass()
         self.testVectorClass()
+        self.testFaceClass()
+
 
 tester = MyGeomUnitTester()

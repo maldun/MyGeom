@@ -23,6 +23,8 @@ import salome
 import geompy
 import GEOM
 
+from MyGeom.Types import *
+
 from numpy import array, ndarray
 from numpy import float64 as data_type
 
@@ -53,3 +55,33 @@ def explode_sub_shape(my_geom_object,type,add_to_study = True):
             geompy.addToStudyInFather(geom_object,sub,name)
 
     return subshapes
+
+def create_local_coordinates(face, coord_u, coord_v):
+    """
+    Creates MyVertex list of a local coordinate system for a given degree.
+    
+    Parameters
+    ----------
+    face : GEOM.FACE or MyFace
+           Face from Salome or MyFace 
+        be such that a is 'square', ie., prod(Q) == prod(b.shape).
+    coord_u : array, one dimensional
+              local u coordinates
+    
+    coord_v : array, one dimensional
+
+    Returns
+    -------
+    vertices : list of vertices, shape is the same as the input array
+
+    Examples
+    --------
+    """
+
+    if not isinstance(face,MyFace):
+        face = MyFace(face)
+
+    make_vertex = face.makeVertexOnSurface
+
+    vertices = [[make_vertex(u,v) for v in coord_v] for u in coord_u]
+    return vertices
