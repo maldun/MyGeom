@@ -112,6 +112,30 @@ class MyVertex(MyGeomObject):
         """
         return str(tuple(self.getCoord()))
 
+    def __add__(self,other):
+        """
+        Arithmetic: Addition of 2 points
+        """
+        return MyVertex(self.getCoord() + other.getCoord())
+
+    def __sub__(self,other):
+        """
+        Arithmetic: Subtraction of 2 points
+        """
+        return MyVertex(self.getCoord() - other.getCoord())
+
+    def __mul__(self,scalar):
+        """
+        Arithmetic: Multiplication with a scalar
+        """
+        return MyVertex(self.getCoord()*scalar)
+
+    def __div__(self,scalar):
+        """
+        Arithmetic: Division by a scalar
+        """
+        return MyVertex(self.getCoord()/scalar)
+
 class MyLine(MyGeomObject):
     """
     Help class for storing lines
