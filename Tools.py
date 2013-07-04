@@ -89,7 +89,7 @@ def create_local_coordinates(face, coord_u, coord_v,my_geom = True):
 
     return vertices
 
-def create_face_by_points(points):
+def create_face_by_points(points,isPlanarFace = True):
     """
     Takes a set of points and creates a face with it
     """
@@ -102,5 +102,8 @@ def create_face_by_points(points):
 
     # Create wires in v direction
     wires += [geompy.MakeInterpol(coords) for coords in points2]
+    wires_geom = [MyGeomObject(wire) for wire in wires]
+    print(wires_geom)
+    #add_list2study(wires_geom,"Wire")
 
-    return MyFace(geompy.MakeFace(wires))
+    #return MyFace(geompy.MakeFace(wires,isPlanarFace))
