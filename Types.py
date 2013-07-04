@@ -284,7 +284,7 @@ class MyFace(MyGeomObject):
             else:
                 raise ValueError("Error: Shape is not a Face!")
         else:
-            ValueError("Error: Not a valid input!")
+            ValueError("Error: Data type not valid!")
 
     def changeOrientation(self,make_copy = False):
         """        
