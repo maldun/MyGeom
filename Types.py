@@ -349,8 +349,12 @@ class MyFace(MyGeomObject):
 
         MyVector instance which holds the normal of the face.
         """
-                                    
-        normal = geompy.GetNormal(self.getGeomObject())
+        if p is None:                    
+            normal = geompy.GetNormal(self.getGeomObject())
+        else:
+            my_p = MyVertex(p)
+            normal = geompy.GetNormal(self.getGeomObject(),my_p.getGeomObject())
+
         return MyVector(normal)
         
 
