@@ -334,8 +334,24 @@ class MyFace(MyGeomObject):
                 raise ValueError("Error: Wrong data type!")
         else:
             return MyVertex(geompy.MakeVertexOnSurface(self.geomObject,u,v))
+
+    def getNormal(self, p = None):
+        """
+        Creates the normal vector of the Face and returns it.
+
+        Parameters
+        ----------
+
+        p : Point where the normal should be. Given As Vertex or MyVertex
+
+        Returns
+        -------
+
+        MyVector instance which holds the normal of the face.
+        """
                                     
-        
+        normal = geompy.GetNormal(self.getGeomObject())
+        return MyVector(normal)
         
 
 class MyQuadrangleFromLines(MyFace):
