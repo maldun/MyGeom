@@ -107,3 +107,21 @@ def create_local_coordinates(face, coord_u, coord_v,my_geom = True):
 #     #add_list2study(wires_geom,"Wire")
 
 #     #return MyFace(geompy.MakeFace(wires,isPlanarFace))
+
+def inner_product(vector1, vector2):
+    """
+    Calculates the inner product of two vectors.
+    """
+    
+    if isinstance(vector1,MyVertex) or isinstance(vector1,MyVector):
+        vec1 = vector1.getCoord()
+    else:
+        raise ValueError("Error: Wrong data type!")
+
+    if isinstance(vector2,MyVertex) or isinstance(vector1,MyVector):
+        vec2 = vector2.getCoord()
+    else:
+        raise ValueError("Error: Wrong data type!")
+
+    from numpy import dot
+    return dot(vec1,vec2)

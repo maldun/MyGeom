@@ -259,11 +259,17 @@ class MyVector(MyGeomObject):
         Two Vectors are considered to be the same iff they have the same startpoints and endpoints. Thats the only difference between a vector and a line.
         (without order)
         """
-        if (self.getP() == other.getP() and self.getQ() == other.getQ()):
+        if (self.getP() == other.getP()) and (self.getQ() == other.getQ()):
             return True
         else:
-            False
+            return False
 
+    def getCoord(self):
+        """
+        Get the coordinate represention of a vector by the formula
+        x = p - q
+        """
+        return (self.getP()-self.getQ()).getCoord()
 
 
 class MyFace(MyGeomObject):
