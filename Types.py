@@ -375,3 +375,20 @@ class MyQuadrangleFromLines(MyFace):
             [edge.geomObject for edge in edges],1)
         self.edges = edges
  
+
+class MyShell(MyGeomObject):
+    """
+    Help class for shell creation and handling
+    """
+
+    def __init__(self,face_list):
+        """
+        creates from a list of faces a shell
+        """
+        #To guarantee that we have the correct data type
+        my_face_list = [ MyFace(face) for face in face_list]
+        
+        my_face_list = [face.getGeomObject() for face in my_face_list]
+        self.geomObject = geompy.MakeShell(my_face_list)
+
+
