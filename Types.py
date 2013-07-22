@@ -381,14 +381,21 @@ class MyShell(MyGeomObject):
     Help class for shell creation and handling
     """
 
-    def __init__(self,face_list):
+    def __init__(self,face_list_or_shell):
         """
         creates from a list of faces a shell
         """
-        #To guarantee that we have the correct data type
-        my_face_list = [ MyFace(face) for face in face_list]
+        if isinstance(face_list_or_shell,MyShell):
+            self.setGeomObject(face_list_or_shell.getGeomObject())  
+        elif isinstance(face_list_or_shell,GEOM._objref_GEOM_Object):
+            if face_list_or_shell.GetShapeType() == GEOM.SHELL:
+                self.setGeomObject(face_list_or_shell)
+        elif isinstance(face_list_or_shell,list):
+            #To guarantee that we have the correct data type
+            my_face_list = [ MyFace(face) for face in face_list_or_shell]
         
-        my_face_list = [face.getGeomObject() for face in my_face_list]
-        self.geomObject = geompy.MakeShell(my_face_list)
-
+            my_face_list = [face.getGeomObject() for face in my_face_list]
+            self.geomObject = geompy.MakeShell(my_face_list)
+        else:
+            raise ValueError("Error: Wrong data type!")
 

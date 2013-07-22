@@ -125,3 +125,9 @@ def inner_product(vector1, vector2):
 
     from numpy import dot
     return dot(vec1,vec2)
+
+def find_object(descriptive_string):
+    """
+    Help function to find object in a study
+    """
+    return salome.myStudy.FindObject(descriptive_string).GetObject()
