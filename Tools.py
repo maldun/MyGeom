@@ -46,6 +46,17 @@ def explode_sub_shape(my_geom_object,type,add_to_study = True):
     """
     Explode Sub Shapes of certain Type. If add_to_study is
     True add all objects to study
+
+    Parameters
+    ----------
+
+    my_geom_object : Objcet of MyGeomObjectType
+    type : String with type description
+    add_to_study : If Objects should be added to study. True when yes, else False
+    
+    Examples
+    --------
+    faces = explode_sub_shape(shell,"FACE",add_to_study = False)
     """
     geom_object = my_geom_object.geomObject
     subshapes = geompy.SubShapeAll(geom_object,geompy.ShapeType[type])
