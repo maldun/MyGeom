@@ -75,7 +75,7 @@ def create_local_coordinates(face, coord_u, coord_v,my_geom = True):
     ----------
     face : GEOM.FACE or MyFace
            Face from Salome or MyFace 
-        be such that a is 'square', ie., prod(Q) == prod(b.shape).
+        
     coord_u : array, one dimensional
               local u coordinates
     
@@ -100,24 +100,23 @@ def create_local_coordinates(face, coord_u, coord_v,my_geom = True):
 
     return vertices
 
-# def create_face_by_points(points,isPlanarFace = True):
-#     """
-#     Takes a set of points and creates a face with it
-#     """
-#     # Create wires in u direction
-#     wires = [geompy.MakeInterpol(coords) for coords in points]
+def create_face_by_points(points,isPlanarFace = True):
+    """
+    Takes a set of points and creates a face with it
+    """
+    # Create wires in u direction
+    wires = [geompy.MakeInterpol(coords) for coords in points]
 
-#     # Transpose list 
-#     points2 = array(points).transpose()
-#     points2 = points2.tolist()
+    # Transpose list 
+    points2 = array(points).transpose()
+    points2 = points2.tolist()
 
-#     # Create wires in v direction
-#     wires += [geompy.MakeInterpol(coords) for coords in points2]
-#     wires_geom = [MyGeomObject(wire) for wire in wires]
-#     print(wires_geom)
-#     #add_list2study(wires_geom,"Wire")
-
-#     #return MyFace(geompy.MakeFace(wires,isPlanarFace))
+    # Create wires in v direction
+    wires += [geompy.MakeInterpol(coords) for coords in points2]
+    
+    face = MyGeomObject(geompy.MakeFaceWires(wires,isPlanarFace))
+    face = explode_sub_shape(face,"FACE")[0]
+    return MyFace(face)
 
 def inner_product(vector1, vector2):
     """
