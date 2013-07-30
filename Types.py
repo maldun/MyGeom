@@ -38,12 +38,16 @@ class MyGeomObject(object):
     def __init__(self,geomObject):
         self.geomObject = geomObject
 
-    def addToStudy(self,studyName):
+    def addToStudy(self,studyName, father = None):
         """
         Adds Vertex to study and adds
         the name in the study
         """
-        geompy.addToStudy(self.geomObject,studyName)
+        
+        if father is None:
+            geompy.addToStudy(self.geomObject,studyName)
+        else:
+            geompy.addToStudyInFahter(father.getGeomObject(),self.getGeomObject(),studyName)
         self.studyName = studyName
 
     def getStudyName(self):
