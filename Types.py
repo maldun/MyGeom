@@ -276,6 +276,28 @@ class MyVector(MyGeomObject):
         return (self.getP()-self.getQ()).getCoord()
 
 
+class MyWire(MyGeomObject):
+    """
+    Help class for wires
+    """
+
+    def __init__(self,wire_or_edges):
+        """
+        Init function for wire creation
+        """
+        if isinstance(wire_or_edges,MyWire):
+            self.setGeomObject(wire_or_edges.getGeomObject())
+        elif isinstance(wire_or_edges,list) or isinstance(wire_or_edges,tuple):
+            self.setGeomObject(geompy.MakeWire(wire_or_edges))
+        elif isinstance(line_or_point,GEOM._objref_GEOM_Object):
+            type = geompy.ShapeIdToType(line_or_point.GetType())
+            if type == 'WIRE':
+                self.setGeomObject(wire_or_edges)
+            else:
+                raise ValueError("Error: Wrong data type!")
+        else:
+            raise ValueError("Error: Wrong data type!")
+        
 class MyFace(MyGeomObject):
     """
     Help class for faces, and face related stuff
