@@ -141,3 +141,58 @@ def find_object(descriptive_string):
     Help function to find object in a study
     """
     return salome.myStudy.FindObject(descriptive_string).GetObject()
+
+def get_min_distance(object1,object2):
+    """
+    Help function to get minimal distance between 2 objects
+    """
+    if isinstance(object1,MyGeomObject):
+        object_1 = object1.getGeomObject()
+    else:
+        object_1 = object1
+
+    if isinstance(object2,MyGeomObject):
+        object_2 = object2.getGeomObject()
+    else:
+        object_2 = object2
+
+
+    return geompy.MinDistance(object_1,object_2)
+
+def get_list_by_name(name,alternative_name = None, info = False):
+    """
+    Help function that searches for all objects in a study with a certain name.
+    If the object with this name is not found it tries to search for an alternative name.
+    """
+    liste = []
+    counter = 0
+    if alternative_name is None: # No alternative no info
+        info = False
+
+    if info: 
+        info_liste = []
+
+    while True:
+        counter += 1
+        try:
+            dired_object = find_object(name + str(counter))
+            liste.append(dired_object)
+            if info:
+                info_liste.append(0)
+
+        except AttributeError:
+            if alternative_name is None:
+                break
+            else:
+                try:
+                    dired_object = find_object(alternative_name + str(counter))
+                    liste.append(dired_object)
+                    if info:
+                        info_liste.append(1)
+                except AttributeError:
+                    break
+
+    if info:
+        return liste, info_liste
+    else:
+        return liste

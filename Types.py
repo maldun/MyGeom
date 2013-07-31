@@ -289,8 +289,8 @@ class MyWire(MyGeomObject):
             self.setGeomObject(wire_or_edges.getGeomObject())
         elif isinstance(wire_or_edges,list) or isinstance(wire_or_edges,tuple):
             self.setGeomObject(geompy.MakeWire(wire_or_edges))
-        elif isinstance(line_or_point,GEOM._objref_GEOM_Object):
-            type = geompy.ShapeIdToType(line_or_point.GetType())
+        elif isinstance(wire_or_edges,GEOM._objref_GEOM_Object):
+            type = geompy.ShapeIdToType(wire_or_edges.GetType())
             if type == 'WIRE':
                 self.setGeomObject(wire_or_edges)
             else:
