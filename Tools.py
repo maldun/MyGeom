@@ -196,3 +196,12 @@ def get_list_by_name(name,alternative_name = None, info = False):
         return liste, info_liste
     else:
         return liste
+
+def add_to_study(geom_object,studyName, father = None):
+    """
+    Adds Vertex to study and adds
+    the name in the study
+    """
+
+    my_geom_object = MyGeomObject(geom_object)
+    my_geom_object.addToStudy(studyName,father)
