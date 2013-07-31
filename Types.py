@@ -303,18 +303,25 @@ class MyFace(MyGeomObject):
     Help class for faces, and face related stuff
     """
 
-    def __init__(self,face):
+    def __init__(self,face,isPlanarFace = True):
         """
         This init is a stub! It will be extended Later!
         """
 
         if isinstance(face,MyFace):
             self.setGeomObject(face.getGeomObject())
+        elif isinstance(face,MyWire):
+            compound = geompy.MakeFaceWires([face.getGeomObject()],isPlanarFace)
+            new_face = geompy.SubShapeAll(compound,geompy.ShapeType["FACE"])[0]
+            self.setGeomObject(new_face)
         elif isinstance(face,GEOM._objref_GEOM_Object):
             if face.GetShapeType() == GEOM.FACE:
                 self.setGeomObject(face)
+            elif face.GetShapeType() == GEOM.WIRE:
+                new_face = MyFace(MyWire(face),isPlanarFace)
+                self.setGeomObject(new_face.getGeomObject())
             else:
-                raise ValueError("Error: Shape is not a Face!")
+                raise ValueError("Error: Shape is not a Face or Wire!")
         else:
             ValueError("Error: Data type not valid!")
 
