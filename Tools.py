@@ -32,12 +32,12 @@ from numpy import float64 as data_type
 # from salome.geom import geomBuilder
 # geompy = geomBuilder.New(salome.myStudy)
 
-def add_list2study(liste,string):
+def add_list2study(liste,string, startindex = 0):
     """
     Function to add list of geom objects to a study,
     with numbered name
     """
-    i = 0
+    i = startindex
     for object in liste:
         object.addToStudy(string + str(i))
         i+=1

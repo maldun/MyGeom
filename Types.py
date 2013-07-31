@@ -45,7 +45,7 @@ class MyGeomObject(object):
         """
         
         if father is None:
-            geompy.addToStudy(self.geomObject,studyName)
+            geompy.addToStudy(self.getGeomObject(),studyName)
         else:
             geompy.addToStudyInFahter(father.getGeomObject(),self.getGeomObject(),studyName)
         self.studyName = studyName
