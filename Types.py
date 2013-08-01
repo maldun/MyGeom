@@ -451,6 +451,9 @@ class MyFace(MyGeomObject):
 
     def __eq__(self,other):
         return self.checkEquality(other)
+
+    def __ne__(self,other):
+        return not self.checkEquality(other)
         
 
 class MyQuadrangleFromLines(MyFace):
