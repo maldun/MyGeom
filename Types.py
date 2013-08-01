@@ -435,19 +435,26 @@ class MyFace(MyGeomObject):
         normals_self = self.getNormal()
         normals_other = other.getNormal()
         if normals_self == normals_other:
-            same = True
+            pass
         else:
             return False
 
         parameters = self._setParameterListToPrecision(nr_points)
         
-        points_self = array([self.makeVertexOnSurface(u,v) for u in parameters for v in parameters])
-        points_other = array([other.makeVertexOnSurface(u,v) for u in parameters for v in parameters])
+        for u in parameters:
+            for v in parameters:
+                if not other.makeVertexOnSurface(u,v) == self.makeVertexOnSurface(u,v):
+                    return False
+
+        return True
         
-        if all(points_self == points_other) and same:
-            return True
-        else:
-            return False
+        # points_self = array([self.makeVertexOnSurface(u,v) for u in parameters for v in parameters])
+        # points_other = array([other.makeVertexOnSurface(u,v) for u in parameters for v in parameters])
+        
+        # if all(points_self == points_other) and same:
+        #     return True
+        # else:
+        #     return False
 
         
 
