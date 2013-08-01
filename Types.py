@@ -401,10 +401,10 @@ class MyFace(MyGeomObject):
         return MyVector(normal)
 
     def setPrecision(self,precision):
-        self.precision = precision
+        self._precision = precision
 
     def getPrecision(self):
-        return self.precision
+        return self._precision
 
     def _setParameterListToPrecision(self,precision):
         return arange(0.0,1.0+1.0/precision,1.0/precision).tolist() 
@@ -431,8 +431,9 @@ class MyFace(MyGeomObject):
         if nr_points < other_precision:
             nr_points = other_precision
         
-            
+
         parameters = self._setParameterListToPrecision(nr_points)
+        
         points_self = array([self.makeVertexOnSurface(u,v) for u in parameters for v in parameters])
         points_other = array([other.makeVertexOnSurface(u,v) for u in parameters for v in parameters])
         
@@ -449,7 +450,7 @@ class MyFace(MyGeomObject):
             return False
 
     def __eq__(self,other):
-        return checkEquality(self,other)
+        return self.checkEquality(other)
         
 
 class MyQuadrangleFromLines(MyFace):
