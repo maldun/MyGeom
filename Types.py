@@ -23,7 +23,7 @@ import salome
 import geompy
 import GEOM
 
-from numpy import array, ndarray
+from numpy import array, ndarray, arange
 from numpy import float64 as data_type
 
 # For future Versions of salome!
@@ -304,10 +304,13 @@ class MyFace(MyGeomObject):
     Help class for faces, and face related stuff
     """
 
-    def __init__(self,face,isPlanarFace = True):
+    def __init__(self,face,isPlanarFace = True, precision = 5):
         """
         This init is a stub! It will be extended Later!
+        Precision : Nr of points to compare
         """
+
+        self._precision = precision
 
         if isinstance(face,MyFace):
             self.setGeomObject(face.getGeomObject())
@@ -396,6 +399,57 @@ class MyFace(MyGeomObject):
             normal = geompy.GetNormal(self.getGeomObject(),my_p.getGeomObject())
 
         return MyVector(normal)
+
+    def setPrecision(self,precision):
+        self.precision = precision
+
+    def getPrecision(self):
+        return self.precision
+
+    def _setParameterListToPrecision(self,precision):
+        return arange(0.0,1.0+1.0/precision,1.0/precision).tolist() 
+        
+
+    def checkEquality(self,other,nr_points = 0):
+        """
+        Checks if 2 faces are equal in the sense of the following
+        E = F <=> x = y and m(x) = n(y) for all x in E and all y in F,
+        where m,n are the normal vector fields of E and F.
+        This criterion may be an overestimation, but it makes more sense
+        in a discrete setting, since the shape functions are also compared
+        indirectly.
+
+        In this implementation only a discrete set of points is compared
+        and one normal is checked
+        """
+
+        if nr_points is 0:
+            nr_points = self.getPrecision()
+
+        # check for higher precision
+        other_precision = other.getPrecision()
+        if nr_points < other_precision:
+            nr_points = other_precision
+        
+            
+        parameters = self._setParameterListToPrecision(nr_points)
+        points_self = array([self.makeVertexOnSurface(u,v) for u in parameters for v in parameters])
+        points_other = array([other.makeVertexOnSurface(u,v) for u in parameters for v in parameters])
+        
+        if all(points_self == points_other):
+            same = True
+        else:
+            same = False
+
+        normals_self = self.getNormal()
+        normals_other = other.getNormal()
+        if normals_self == normals_other and same is True:
+            return True
+        else:
+            return False
+
+    def __eq__(self,other):
+        return checkEquality(self,other)
         
 
 class MyQuadrangleFromLines(MyFace):
