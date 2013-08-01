@@ -304,7 +304,7 @@ class MyFace(MyGeomObject):
     Help class for faces, and face related stuff
     """
 
-    def __init__(self,face,isPlanarFace = True, precision = 5):
+    def __init__(self,face,isPlanarFace = True, precision = 2):
         """
         This init is a stub! It will be extended Later!
         Precision : Nr of points to compare
@@ -431,23 +431,25 @@ class MyFace(MyGeomObject):
         if nr_points < other_precision:
             nr_points = other_precision
         
+        
+        normals_self = self.getNormal()
+        normals_other = other.getNormal()
+        if normals_self == normals_other:
+            same = True
+        else:
+            return False
 
         parameters = self._setParameterListToPrecision(nr_points)
         
         points_self = array([self.makeVertexOnSurface(u,v) for u in parameters for v in parameters])
         points_other = array([other.makeVertexOnSurface(u,v) for u in parameters for v in parameters])
         
-        if all(points_self == points_other):
-            same = True
-        else:
-            same = False
-
-        normals_self = self.getNormal()
-        normals_other = other.getNormal()
-        if normals_self == normals_other and same is True:
+        if all(points_self == points_other) and same:
             return True
         else:
             return False
+
+        
 
     def __eq__(self,other):
         return self.checkEquality(other)
