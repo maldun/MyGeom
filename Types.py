@@ -463,7 +463,19 @@ class MyFace(MyGeomObject):
 
     def __ne__(self,other):
         return not self.checkEquality(other)
-        
+    
+    def getPerimeter(self):
+        """
+        Returns perimeter of face
+        """
+        return geompy.BasicProperties(self.getGeomObject())[0]
+
+    def getArea(self):
+        """
+        Returns area of face
+        """
+        return geompy.BasicProperties(self.getGeomObject())[1]
+
 
 class MyQuadrangleFromLines(MyFace):
     """
