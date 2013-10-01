@@ -4,11 +4,11 @@ MyGeom Module - API for easier Salome geompy usage
 Help Module for Coding with Salome 
 
 Author: Stefan Reiterer
-Email: stefan.reiterer@magnasteyr.com or maldun.finsterschreck@gmail.com
+Email: maldun.finsterschreck@gmail.com
 
 License:  
 
-Copyright (C) 2013  Stefan Reiterer - stefan.reiterer@magnasteyr.com or maldun.finsterschreck@gmail.com
+Copyright (C) 2013  Stefan Reiterer - maldun.finsterschreck@gmail.com
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
