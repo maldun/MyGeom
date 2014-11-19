@@ -8,7 +8,7 @@ Email: maldun.finsterschreck@gmail.com
 
 License:  
 
-Copyright (C) 2013  Stefan Reiterer - maldun.finsterschreck@gmail.com
+Copyright (C) 2013  Stefan Reiterer - stefan.harald.reiterer@gmail.com
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
