@@ -4,7 +4,7 @@ MyGeom Module - API for easier Salome geompy usage
 Help Module for Coding with Salome 
 
 Author: Stefan Reiterer
-Email: maldun.finsterschreck@gmail.com
+Email: stefan.harald.reiterer@gmail.com
 
 License:  
 
