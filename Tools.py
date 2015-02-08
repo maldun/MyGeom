@@ -22,9 +22,16 @@
 
 from __future__ import print_function
 
+# import salome
+# import geompy
+# import GEOM
+
 import salome
-import geompy
+salome.salome_init()
 import GEOM
+from salome.geom import geomBuilder
+geompy = geomBuilder.New(salome.myStudy)
+
 
 from MyGeom.Types import *
 

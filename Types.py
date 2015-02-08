@@ -19,9 +19,15 @@
 
 from __future__ import print_function
 
+# import salome
+# import geompy
+# import GEOM
+
 import salome
-import geompy
+salome.salome_init()
 import GEOM
+from salome.geom import geomBuilder
+geompy = geomBuilder.New(salome.myStudy)
 
 from numpy import array, ndarray, arange
 from numpy import float64 as data_type
